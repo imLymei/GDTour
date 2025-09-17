@@ -23,8 +23,8 @@ const UIButtonGodotToursPackedScene = preload("ui/ui_button_godot_tours.tscn")
 const ALERT_TEXT := "You're using Godot '%s', but GDTour does not support this version currently.\nPlease use one of the supported versions: '%s <= VERSION <= %s'."
 
 var _supported_versions := {
-	min = {major = 4, minor = 3, patch = 0, op = func(a: int, b: int) -> bool: return a <= b},
-	max = {major = 4, minor = 4, patch = 1, op = func(a: int, b: int) -> bool: return a >= b},
+	min = {major = 4, minor = 4, op = func(a: int, b: int) -> bool: return a <= b},
+	max = {major = 4, minor = 5, op = func(a: int, b: int) -> bool: return a >= b},
 }
 var version_info := Engine.get_version_info()
 
@@ -56,7 +56,7 @@ func _enter_tree() -> void:
 		var accept_dialog := AcceptDialog.new()
 		add_child(accept_dialog)
 		accept_dialog.dialog_text = ALERT_TEXT % ([version_info.string] + _supported_versions.keys().map(
-			func(k: String) -> String: return "{major}.{minor}.{patch}".format(_supported_versions[k])
+			func(k: String) -> String: return "{major}.{minor}".format(_supported_versions[k])
 		))
 		accept_dialog.initial_position = AcceptDialog.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
 		accept_dialog.exclusive = false
@@ -302,6 +302,5 @@ func _is_supported_version() -> bool:
 	var result := true
 	for bound: String in _supported_versions:
 		var dict: Dictionary = _supported_versions[bound]
-		for key: String in _supported_versions[bound].keys().filter(func (k: String) -> bool: return k != "op"):
-			result = result and dict.op.call(dict[key], version_info[key])
+		result = result and dict.op.call(dict.major, version_info.major) and dict.op.call(dict.minor, version_info.minor)
 	return result
