@@ -17,11 +17,13 @@ func get_highlights() -> Array[Highlight]:
 
 
 func _build() -> void:
+	# Step 1
 	var TestTourBubblePackedScene := load("res://test_tour_bubble.tscn")
 	swap_bubble(TestTourBubblePackedScene)
 	auto_next()
 	complete_step()
 
+	# Step 2
 	swap_bubble()
 	queue_command(func() -> void:
 		bubble.is_debug = true
@@ -29,17 +31,20 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 3
 	bubble_add_task_toggle_button(interface.canvas_item_editor_toolbar_smart_snap_button, true, gtr("Turn on grid snapping"))
 	highlight_controls([interface.canvas_item_editor_toolbar_smart_snap_button])
 	auto_next()
 	complete_step()
 
+	# Step 4
 	context_set_3d()
 	bubble_add_task_toggle_button(interface.spatial_editor_toolbar_snap_button, true, gtr("Turn on grid snapping"))
 	highlight_controls([interface.spatial_editor_toolbar_snap_button])
 	auto_next()
 	complete_step()
 
+	# Step 5
 	var file_path := "res://test_tour_2d.tscn"
 	scene_open(file_path)
 	queue_command(func() -> void:
@@ -50,6 +55,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 6
 	scene_select_nodes_by_path(["TestTour2D", "TestTour2D/NodeToEdit"])
 	queue_command(func() -> void:
 		var names: Array[String] = ["TestTour2D", "NodeToEdit"]
@@ -60,7 +66,8 @@ func _build() -> void:
 	)
 	auto_next()
 	complete_step()
-	
+
+	# Step 7
 	scene_toggle_lock_nodes_by_path(["TestTour2D"])
 	queue_command(func() -> void:
 		var edited_scene_root := EditorInterface.get_edited_scene_root()
@@ -69,6 +76,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 8
 	scene_toggle_lock_nodes_by_path(["TestTour2D"], false)
 	queue_command(func() -> void:
 		var edited_scene_root := EditorInterface.get_edited_scene_root()
@@ -77,6 +85,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 9
 	scene_deselect_all_nodes()
 	queue_command(func() -> void:
 		var selected_nodes := editor_selection.get_selected_nodes()
@@ -85,6 +94,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 10
 	tabs_set_to_index(interface.inspector_tabs, 1)
 	queue_command(func() -> void:
 		assert(interface.inspector_tabs.current_tab == 1, "'interface.inspector_tabs.current_tab' should be '1'")
@@ -93,6 +103,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 11
 	tabs_set_to_title(interface.scene_tabs, "Import")
 	queue_command(func() -> void:
 		assert(interface.scene_tabs.current_tab == 1, "'interface.scene_tabs.current_tab' should be '1'")
@@ -101,6 +112,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 12
 	context_set_2d()
 	queue_command(func() -> void:
 		await delay_process_frame(2)
@@ -117,6 +129,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 13
 	canvas_item_editor_zoom_reset()
 	queue_command(func() -> void:
 		assert(
@@ -127,6 +140,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 14
 	canvas_item_editor_flash_area(Rect2(0, 0, 1200, 900))
 	queue_command(func() -> void:
 		var predicate := func(n: Node) -> bool: return n is FlashArea
@@ -138,6 +152,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 15
 	context_set_asset_lib()
 	context_set_2d()
 	queue_command(func() -> void:
@@ -150,6 +165,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 16
 	context_set_3d()
 	queue_command(func() -> void:
 		assert(interface.spatial_editor.is_visible_in_tree(), "'interface.spatial_editor' should be visible")
@@ -161,6 +177,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 17
 	context_set_script()
 	queue_command(func() -> void:
 		assert(interface.script_editor.is_visible_in_tree(), "'interface.script_editor' should be visible")
@@ -172,6 +189,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 18
 	context_set_game()
 	queue_command(func() -> void:
 		assert(
@@ -182,6 +200,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 19
 	context_set_asset_lib()
 	queue_command(func() -> void:
 		assert(interface.asset_lib.is_visible_in_tree(), "'interface.asset_lib' should be visible")
@@ -193,6 +212,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 20
 	var title := "Test Title"
 	bubble_set_title(title)
 	queue_command(func() -> void:
@@ -203,6 +223,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 21
 	var lines: Array[String] = ["Test Line 1", "Test Line 2"]
 	queue_command(func() -> void: bubble.add_text(lines))
 	queue_command(func() -> void:
@@ -220,6 +241,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 22
 	lines = ["Code Line 1", "Code Line 2", "Code Line 3"]
 	queue_command(func() -> void: bubble.add_code(lines))
 	queue_command(func() -> void:
@@ -237,6 +259,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 23
 	file_path = "res://icon.png"
 	var texture := load(file_path)
 	queue_command(func() -> void: bubble.add_texture(texture))
@@ -251,6 +274,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 24
 	file_path = "res://test_video.ogv"
 	var stream := load(file_path)
 	queue_command(func() -> void: bubble.add_video(stream))
@@ -265,6 +289,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 25
 	bubble_add_task_press_button(interface.run_bar_play_button)
 	queue_command(func() -> void:
 		EditorInterface.play_main_scene()
@@ -276,6 +301,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 26
 	bubble_add_task_press_button(interface.run_bar_play_current_button)
 	queue_command(func() -> void:
 		EditorInterface.play_current_scene()
@@ -287,6 +313,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 27
 	bubble_add_task_toggle_button(interface.context_switcher_2d_button)
 	queue_command(func() -> void:
 		EditorInterface.set_main_screen_editor("2D")
@@ -296,6 +323,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 28
 	bubble_add_task_set_tab_to_index(interface.inspector_tabs, 1)
 	queue_command(func() -> void:
 		interface.inspector_tabs.set_current_tab(1)
@@ -305,6 +333,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 29
 	bubble_add_task_set_tab_to_title(interface.inspector_tabs, "Inspector")
 	queue_command(func() -> void:
 		interface.inspector_tabs.set_current_tab(0)
@@ -314,6 +343,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 30
 	bubble_add_task_select_nodes_by_path(["TestTour2D/NodeToEdit"])
 	queue_command(func() -> void:
 		editor_selection.clear()
@@ -324,6 +354,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 31
 	bubble_add_task_set_ranges({
 		interface.snap_options_grid_step_controls[1]: 32,
 		interface.snap_options_grid_step_controls[2]: 32,
@@ -339,6 +370,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 32
 	var text := "Text Header"
 	queue_command(func() -> void: bubble.set_header(text))
 	queue_command(func() -> void:
@@ -350,6 +382,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 33
 	text = "Text Footer"
 	queue_command(func() -> void: bubble.set_footer(text))
 	queue_command(func() -> void:
@@ -361,6 +394,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 34
 	queue_command(func() -> void: bubble.set_background(texture))
 	queue_command(func() -> void:
 		assert(
@@ -371,6 +405,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 35
 	bubble_move_and_anchor(interface.main_screen, Bubble.At.TOP_RIGHT, 0)
 	queue_command(func() -> void:
 		await delay_process_frame(2)
@@ -384,6 +419,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 36
 	bubble_move_and_anchor(interface.main_screen)
 	bubble_set_avatar_at(Bubble.AvatarAt.RIGHT)
 	queue_command(func() -> void:
@@ -399,6 +435,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 37
 	var size := Vector2(640, 480)
 	bubble_set_avatar_at(Bubble.AvatarAt.LEFT)
 	bubble_set_minimum_size_scaled(size)
@@ -412,6 +449,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 38
 	var node_names: Array[String] = ["NodeToEdit"]
 	bubble_set_minimum_size_scaled()
 	highlight_scene_nodes_by_name(node_names)
@@ -429,6 +467,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 39
 	var node_paths: Array[String] = ["TestTour2D", "TestTour2D/NodeToEdit"]
 	highlight_scene_nodes_by_path(node_paths)
 	queue_command(func() -> void:
@@ -443,6 +482,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 40
 	var filesystem_paths: Array[String] = ["res://icon.png"]
 	highlight_filesystem_paths(filesystem_paths)
 	queue_command(func() -> void:
@@ -458,6 +498,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 41
 	var inspector_properties: Array[StringName] = [&"position", &"scale"]
 	scene_select_nodes_by_path(["TestTour2D/NodeToEdit"])
 	highlight_inspector_properties(inspector_properties)
@@ -473,6 +514,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 42
 	var signals: Array[String] = ["draw", "hidden"]
 	tabs_set_to_index(interface.inspector_tabs, 1)
 	queue_command(func() -> void: interface.node_dock_signals_button.pressed.emit())
@@ -489,6 +531,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 43
 	file_path = "res://test_tour_2d.gd"
 	var script := load(file_path)
 	context_set_script()
@@ -506,6 +549,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 44
 	highlight_controls([interface.run_bar])
 	queue_command(func() -> void:
 		var highlights := await get_highlights()
@@ -519,6 +563,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 45
 	var tab_index := 0
 	highlight_tabs_index(interface.inspector_tabs, tab_index)
 	queue_command(func() -> void:
@@ -533,6 +578,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 46
 	var tab_title := "Import"
 	highlight_tabs_title(interface.scene_tabs, tab_title)
 	queue_command(func() -> void:
@@ -547,6 +593,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 47
 	var canvas_item_highlight_rect := Rect2(0, 0, 800, 800)
 	context_set_2d()
 	highlight_canvas_item_editor_rect(canvas_item_highlight_rect)
@@ -562,6 +609,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 48
 	bubble_set_title("Assert TileSet")
 	queue_command(func() -> void:
 		interface.bottom_tileset_button.toggled.emit(true)
@@ -571,6 +619,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 49
 	var item_index := 1
 	scene_select_nodes_by_path(["TestTour2D/TileMap"])
 	tabs_set_to_index(interface.tilemap_tabs, 0)
@@ -592,6 +641,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 50
 	context_set_3d()
 	queue_command(func() -> void:
 		interface.bottom_tilemap_button.toggled.emit(false)
@@ -610,6 +660,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 51
 	var to := Vector2(400, 600)
 	context_set_2d()
 	mouse_move_by_position(200 * Vector2.ONE, to)
@@ -617,6 +668,7 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 52
 	queue_command(func() -> void:
 		interface.bottom_output_button.toggled.emit(true)
 		assert(interface.logger.is_visible_in_tree(), "'interface.logger.is_visible_in_tree()' should be 'true'")
@@ -624,9 +676,9 @@ func _build() -> void:
 	auto_next()
 	complete_step()
 
+	# Step 53
 	queue_command(func() -> void:
 		interface.bottom_debugger_button.toggled.emit(true)
 		assert(interface.debugger.is_visible_in_tree(), "'interface.debugger.is_visible_in_tree()' should be 'true'")
 	)
-	auto_next()
 	complete_step()
