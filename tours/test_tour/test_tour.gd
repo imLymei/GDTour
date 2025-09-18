@@ -121,9 +121,14 @@ func _build() -> void:
 	queue_command(func() -> void:
 		await delay_process_frame(2)
 		var scene_viewport := EditorInterface.get_edited_scene_root().get_viewport()
+		var rounded = Vector2i(scene_viewport.global_canvas_transform.origin.round())
+		var half_viewport_size = Vector2i(scene_viewport.size / 2)
 		assert(
-			Vector2i(scene_viewport.global_canvas_transform.origin) == scene_viewport.size / 2,
-			"'scene_viewport.global_canvas_transform.origin' should be 'screen_viewport.size / 2'",
+			rounded == half_viewport_size,
+			(
+				"Expected: 'scene_viewport.global_canvas_transform.origin' should be 'screen_viewport.size / 2' (%s)\n" % [half_viewport_size] +
+				"But got: '%s'" % str(rounded)
+			),
 		)
 	)
 	auto_next()
