@@ -66,8 +66,7 @@ func add_move_operation(from: Callable, to: Callable) -> void:
 				# position.
 				var from_global_position: Vector2 = from.call()
 				var to_global_position: Vector2 = to.call()
-				canvas_group.global_position = from_global_position.lerp(to_global_position, progress)
-				print("Moving mouse: ", canvas_group.global_position),
+				canvas_group.global_position = from_global_position.lerp(to_global_position, progress),
 			0.0,
 			1.0,
 			max(distance / speed, 0.5)
