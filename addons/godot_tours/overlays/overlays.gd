@@ -227,54 +227,58 @@ func expand_inspector_resource(resource_property_name: StringName) -> void:
 ##
 ## [b]Warning:[/b] This does not support properties that are now inspector sections
 ## (properties with checkboxes). For those, use [method highlight_inspector_section_property].
-func highlight_inspector_properties(names: Array[StringName], do_center := true,
-play_flash := false) -> void:
+func highlight_inspector_property(name: StringName, do_center := true, play_flash := false) -> void:
 	var scroll_offset := 200 * EditorInterface.get_editor_scale()
 	var all_properties := interface.inspector_editor.find_children("", "EditorProperty", true, false)
-	for current_name in names:
-		var predicate_name_matches := func predicate_name_matches(p: EditorProperty) -> bool:
-			return p.get_edited_property() == current_name
 
-		var matching_index := all_properties.find_custom(predicate_name_matches)
-		if matching_index < 0:
-			continue
-		var matching_property: EditorProperty = all_properties[matching_index]
-		# Unfold parent sections recursively if necessary.
-		var current_parent := matching_property.get_parent()
-		const MAX_ITERATION_COUNT := 10
-		for i in MAX_ITERATION_COUNT:
-			var parent_class := current_parent.get_class()
-			if parent_class == "EditorInspectorSection":
-				current_parent.unfold()
+	var predicate_name_matches := func predicate_name_matches(p: EditorProperty) -> bool:
+		return p.get_edited_property() == name
 
-			current_parent = current_parent.get_parent()
-			if current_parent == interface.inspector_editor:
-				break
+	var matching_index := all_properties.find_custom(predicate_name_matches)
+	if matching_index < 0:
+		return
 
-		if do_center:
-			interface.inspector_editor.scroll_vertical += (
-				matching_property.global_position.y + scroll_offset
-				- interface.inspector_editor.global_position.y
-				- interface.inspector_editor.size.y / 2.0
-			)
-		else:
-			interface.inspector_editor.ensure_control_visible(matching_property)
+	var matching_property: EditorProperty = all_properties[matching_index]
+	# Unfold parent sections recursively if necessary.
+	var current_parent := matching_property.get_parent()
+	const MAX_ITERATION_COUNT := 10
+	for i in MAX_ITERATION_COUNT:
+		var parent_class := current_parent.get_class()
+		if parent_class == "EditorInspectorSection":
+			current_parent.unfold()
 
-		var dimmer := ensure_get_dimmer_for(interface.inspector_dock)
-		var rect_getter := func inspector_property_rect_getter() -> Rect2:
-			all_properties = interface.inspector_editor.find_children("", "EditorProperty", true, false)
-			var matching_property_index := all_properties.find_custom(predicate_name_matches)
-			if matching_property_index < 0:
-				return Rect2()
-			var editor_property: EditorProperty = all_properties[matching_index]
-			if editor_property.is_visible_in_tree():
-				var rect := editor_property.get_global_rect()
-				rect.position.x = interface.inspector_editor.global_position.x
-				rect.size.x = interface.inspector_editor.size.x
-				return rect.intersection(interface.inspector_editor.get_global_rect())
+		current_parent = current_parent.get_parent()
+		if current_parent == interface.inspector_editor:
+			break
+
+	if do_center:
+		interface.inspector_editor.scroll_vertical += (
+			matching_property.global_position.y + scroll_offset
+			- interface.inspector_editor.global_position.y
+			- interface.inspector_editor.size.y / 2.0
+		)
+	else:
+		interface.inspector_editor.ensure_control_visible(matching_property)
+
+	var dimmer := ensure_get_dimmer_for(interface.inspector_dock)
+	# We need to find the property again in case the inspector changed (e.g. the
+	# user selected another node or deselected the node).
+	# TODO: this could be perhaps cached in the future. For now, we want to
+	# ensure we always highlight the right property and re-run this frequently.
+	var rect_getter := func inspector_property_rect_getter() -> Rect2:
+		all_properties = interface.inspector_editor.find_children("", "EditorProperty", true, false)
+		var matching_property_index := all_properties.find_custom(predicate_name_matches)
+		if matching_property_index < 0:
 			return Rect2()
+		var editor_property: EditorProperty = all_properties[matching_index]
+		if editor_property.is_visible_in_tree():
+			var rect := editor_property.get_global_rect()
+			rect.position.x = interface.inspector_editor.global_position.x
+			rect.size.x = interface.inspector_editor.size.x
+			return rect.intersection(interface.inspector_editor.get_global_rect())
+		return Rect2()
 
-		add_highlight_to_control.call_deferred(interface.inspector_editor, rect_getter, play_flash, true)
+	add_highlight_to_control.call_deferred(interface.inspector_editor, rect_getter, play_flash, true)
 
 
 ## Highlights Inspector dock sections by the [code]first_property_name[/code] of
@@ -285,33 +289,7 @@ play_flash := false) -> void:
 ## [code]play_flash[/code].
 func highlight_inspector_section_property(first_property_name: StringName, do_center := true, play_flash := false) -> void:
 	var scroll_offset := 200 * EditorInterface.get_editor_scale()
-	var all_children := interface.inspector_editor.get_children()
-	var matching_section: Control = null
-
-	for child in all_children:
-		if child is not Container:
-			continue
-
-		# Check if this container has a VBoxContainer child (if so it's likely
-		# an inspector section representing a property)
-		var vbox_container: VBoxContainer = null
-		for grandchild in child.get_children():
-			if grandchild is VBoxContainer:
-				vbox_container = grandchild
-				break
-
-		if vbox_container == null:
-			continue
-
-		# Check if the first EditorProperty in the VBoxContainer matches our target
-		for property_child in vbox_container.get_children():
-			if property_child is EditorProperty:
-				if property_child.get_edited_property() == first_property_name:
-					matching_section = child
-					break
-
-		if matching_section != null:
-			break
+	var matching_section := _find_inspector_section_by_first_property(first_property_name)
 
 	if matching_section == null:
 		push_warning("highlight_inspector_section_property: Could not find inspector section with first property name '%s' in Inspector." % first_property_name)
@@ -323,31 +301,20 @@ func highlight_inspector_section_property(first_property_name: StringName, do_ce
 		interface.inspector_editor.ensure_control_visible(matching_section)
 
 	var dimmer := ensure_get_dimmer_for(interface.inspector_dock)
+	# We need to find the property again in case the inspector changed (e.g. the
+	# user selected another node or deselected the node).
+	# TODO: this could be perhaps cached in the future. For now, we want to
+	# ensure we always highlight the right property and re-run this frequently.
 	var rect_getter := func inspector_section_rect_getter() -> Rect2:
-		# TODO: verify when and how this is called and if I can't cache the section.
-		all_children = interface.inspector_editor.get_children()
-		for child in all_children:
-			if not child is Container:
-				continue
+		var section := _find_inspector_section_by_first_property(first_property_name)
+		if section == null:
+			return Rect2()
 
-			var vbox_container: VBoxContainer = null
-			for grandchild in child.get_children():
-				if grandchild is VBoxContainer:
-					vbox_container = grandchild
-					break
-
-			if vbox_container == null:
-				continue
-
-			for property_child in vbox_container.get_children():
-				if property_child is EditorProperty:
-					if property_child.get_edited_property() == first_property_name:
-						if child.is_visible_in_tree():
-							var rect: Rect2 = child.get_global_rect()
-							rect.position.x = interface.inspector_editor.global_position.x
-							rect.size.x = interface.inspector_editor.size.x
-							return rect.intersection(interface.inspector_editor.get_global_rect())
-						return Rect2()
+		if section.is_visible_in_tree():
+			var rect: Rect2 = section.get_global_rect()
+			rect.position.x = interface.inspector_editor.global_position.x
+			rect.size.x = interface.inspector_editor.size.x
+			return rect.intersection(interface.inspector_editor.get_global_rect())
 		return Rect2()
 
 	add_highlight_to_control.call_deferred(interface.inspector_editor, rect_getter, play_flash, true)
@@ -445,3 +412,45 @@ func highlight_tilemap_list_item(item_list: ItemList, item_index: int, play_flas
 		rect.position += item_list.global_position
 		return rect
 	add_highlight_to_control(interface.tilemap, rect_getter, play_flash)
+
+
+## Inspector: Finds and returns an EditorProperty by name
+func _find_editor_property_by_name(property_name: StringName) -> EditorProperty:
+	var all_properties := interface.inspector_editor.find_children("", "EditorProperty", true, false)
+	var predicate_name_matches := func predicate_name_matches(p: EditorProperty) -> bool:
+		return p.get_edited_property() == property_name
+
+	var matching_index := all_properties.find_custom(predicate_name_matches)
+	if matching_index < 0:
+		return null
+	return all_properties[matching_index]
+
+
+## Inspector: finds a section by its first child EditorProperty name. Use this
+## for the new properties in Godot 4.5 that are wrapped into inspector sections
+## (the type and its methods are not exposed to the API so we need this workaround)
+func _find_inspector_section_by_first_property(first_property_name: StringName) -> Control:
+	var all_property_children := interface.inspector_editor.get_child(0).get_child(2).get_children()
+
+	for child in all_property_children:
+		if child.get_class() != "EditorInspectorSection":
+			continue
+
+		# Check if this container has a VBoxContainer child (if so it's likely
+		# an inspector section representing a property)
+		var vbox_container: VBoxContainer = null
+		for grandchild in child.get_children():
+			if grandchild is VBoxContainer:
+				vbox_container = grandchild
+				break
+
+		if vbox_container == null:
+			continue
+
+		# Check if the first EditorProperty in the VBoxContainer matches our target
+		for property_child in vbox_container.get_children():
+			if property_child is EditorProperty:
+				if property_child.get_edited_property() == first_property_name:
+					return child
+
+	return null

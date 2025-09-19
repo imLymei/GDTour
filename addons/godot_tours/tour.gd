@@ -1101,13 +1101,27 @@ func expand_inspector_resource(resource_property_name: StringName) -> void:
 
 ## Highlights properties in the Inspector dock.
 ## This helps users find specific properties they need to modify in the currently selected node.
+## [b]WARNING[/b]: It does not support section-like properties with a checkbox (in Godot 4.5+). Use
+## [method highlight_inspector_section_property] for that.
 ##
 ## Parameters:
 ## - names: Array of property names to highlight
 ## - do_center: If true, center the view on the highlighted properties
 ## - play_flash: If true, plays a flash animation on the highlighted properties
 func highlight_inspector_properties(names: Array[StringName], do_center := true, play_flash := true) -> void:
-	queue_command(overlays.highlight_inspector_properties, [names, do_center, play_flash])
+	for current_name in names:
+		queue_command(overlays.highlight_inspector_property, [current_name, do_center, play_flash])
+
+
+## Highlights a specific property that is section-like with a checkbox in the Inspector dock.
+## These properties are not exposed to the editor API directly, so this method helps find them
+## by specifying their first child property names.
+##
+## Parameters:
+## - first_child_names: Array of the first-level child property names of the section property to highlight.
+func highlight_inspector_section_properties(first_child_names: Array[StringName], do_center := true, play_flash := true) -> void:
+	for current_name in first_child_names:
+		queue_command(overlays.highlight_inspector_section_property, [current_name, do_center, play_flash])
 
 
 ## Highlights signals in the Node dock's Signals tab.
