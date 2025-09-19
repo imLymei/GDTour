@@ -222,9 +222,13 @@ func expand_inspector_resource(resource_property_name: StringName) -> void:
 				return
 
 
-## Highlights Inspector dock properties by (programmatic) [code]name[/code]. See [method highlight_tree_items]
-## for [code]play_flash[/code].
-func highlight_inspector_properties(names: Array[StringName], do_center := true, play_flash := false) -> void:
+## Highlights Inspector dock properties by (programmatic) [code]name[/code]. See
+## [method highlight_tree_items] for [code]play_flash[/code].
+##
+## [b]Warning:[/b] This does not support properties that are now inspector sections
+## (properties with checkboxes). For those, use [method highlight_inspector_section_property].
+func highlight_inspector_properties(names: Array[StringName], do_center := true,
+play_flash := false) -> void:
 	var scroll_offset := 200 * EditorInterface.get_editor_scale()
 	var all_properties := interface.inspector_editor.find_children("", "EditorProperty", true, false)
 	for current_name in names:
@@ -271,6 +275,82 @@ func highlight_inspector_properties(names: Array[StringName], do_center := true,
 			return Rect2()
 
 		add_highlight_to_control.call_deferred(interface.inspector_editor, rect_getter, play_flash, true)
+
+
+## Highlights Inspector dock sections by the [code]first_property_name[/code] of
+## the section's first child property.
+##
+## This is useful for highlighting inspector sections that contain multiple
+## related properties. See [method highlight_tree_items] for
+## [code]play_flash[/code].
+func highlight_inspector_section_property(first_property_name: StringName, do_center := true, play_flash := false) -> void:
+	var scroll_offset := 200 * EditorInterface.get_editor_scale()
+	var all_children := interface.inspector_editor.get_children()
+	var matching_section: Control = null
+
+	for child in all_children:
+		if child is not Container:
+			continue
+
+		# Check if this container has a VBoxContainer child (if so it's likely
+		# an inspector section representing a property)
+		var vbox_container: VBoxContainer = null
+		for grandchild in child.get_children():
+			if grandchild is VBoxContainer:
+				vbox_container = grandchild
+				break
+
+		if vbox_container == null:
+			continue
+
+		# Check if the first EditorProperty in the VBoxContainer matches our target
+		for property_child in vbox_container.get_children():
+			if property_child is EditorProperty:
+				if property_child.get_edited_property() == first_property_name:
+					matching_section = child
+					break
+
+		if matching_section != null:
+			break
+
+	if matching_section == null:
+		push_warning("highlight_inspector_section_property: Could not find inspector section with first property name '%s' in Inspector." % first_property_name)
+		return
+
+	if do_center:
+		interface.inspector_editor.scroll_vertical += ( matching_section.global_position.y + scroll_offset - interface.inspector_editor.global_position.y - interface.inspector_editor.size.y / 2.0 )
+	else:
+		interface.inspector_editor.ensure_control_visible(matching_section)
+
+	var dimmer := ensure_get_dimmer_for(interface.inspector_dock)
+	var rect_getter := func inspector_section_rect_getter() -> Rect2:
+		# TODO: verify when and how this is called and if I can't cache the section.
+		all_children = interface.inspector_editor.get_children()
+		for child in all_children:
+			if not child is Container:
+				continue
+
+			var vbox_container: VBoxContainer = null
+			for grandchild in child.get_children():
+				if grandchild is VBoxContainer:
+					vbox_container = grandchild
+					break
+
+			if vbox_container == null:
+				continue
+
+			for property_child in vbox_container.get_children():
+				if property_child is EditorProperty:
+					if property_child.get_edited_property() == first_property_name:
+						if child.is_visible_in_tree():
+							var rect: Rect2 = child.get_global_rect()
+							rect.position.x = interface.inspector_editor.global_position.x
+							rect.size.x = interface.inspector_editor.size.x
+							return rect.intersection(interface.inspector_editor.get_global_rect())
+						return Rect2()
+		return Rect2()
+
+	add_highlight_to_control.call_deferred(interface.inspector_editor, rect_getter, play_flash, true)
 
 
 ## Highlights Node > Signals dock [TreeItem]s by [code]signal_names[/code]. See [method highlight_tree_items]
