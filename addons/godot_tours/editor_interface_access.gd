@@ -28,6 +28,7 @@ var rendering_options: OptionButton = null
 # Main Screen
 var main_screen: VBoxContainer = null
 var main_screen_tabs: TabBar = null
+var main_screen_tabs_add_tab_button: Button = null
 var distraction_free_button: Button = null
 
 var canvas_item_editor: VBoxContainer = null
@@ -354,6 +355,7 @@ func _init() -> void:
 	# Main Screen
 	main_screen = EditorInterface.get_editor_main_screen()
 	main_screen_tabs = Utils.find_child_by_type(main_screen.get_parent().get_parent(), "TabBar")
+	main_screen_tabs_add_tab_button = main_screen_tabs.get_child(0)
 	distraction_free_button = main_screen_tabs.get_parent().find_children("", "Button", true, false).back()
 	canvas_item_editor = Utils.find_child_by_type(main_screen, "CanvasItemEditor")
 	canvas_item_editor_viewport = Utils.find_child_by_type(canvas_item_editor, "CanvasItemEditorViewport")
@@ -722,6 +724,7 @@ func _init() -> void:
 		spatial_editor_toolbar_sun_button: ["spatial_editor_toolbar_sun_button", "PreviewSun"],
 		spatial_editor_toolbar_environment_button: ["spatial_editor_toolbar_environment_button", "PreviewEnvironment"],
 		spatial_editor_toolbar_sun_environment_button: ["spatial_editor_toolbar_sun_environment_button", "GuiTabMenuHl"],
+		main_screen_tabs_add_tab_button: ["main_screen_tabs_add_tab_button", "Add"],
 		scene_dock_add_button: ["scene_dock_add_button", "Add"],
 		scene_dock_add_script_button: ["scene_dock_add_script_button", "Script"],
 		node_dock_signals_button: ["node_dock_signals_button", "Signals"],
