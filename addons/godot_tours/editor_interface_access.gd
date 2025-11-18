@@ -115,6 +115,10 @@ var snap_options_scale_step_controls: Array[Control] = []
 var scene_tabs: TabBar = null
 var scene_dock: VBoxContainer = null
 var scene_dock_create_root_panel: VBoxContainer = null
+var scene_dock_create_root_2d_scene_button: Button = null
+var scene_dock_create_root_3d_scene_button: Button = null
+var scene_dock_create_root_user_interface_button: Button = null
+var scene_dock_create_root_other_node_button: Button = null
 var scene_dock_add_button: Button = null
 var scene_dock_add_script_button: Button = null
 var scene_tree: Tree = null
@@ -444,6 +448,10 @@ func _init() -> void:
 	# Left Upper
 	scene_dock = Utils.find_child_by_type(base_control, "SceneTreeDock")
 	scene_dock_create_root_panel = scene_dock.get_child(2)
+	scene_dock_create_root_2d_scene_button = scene_dock_create_root_panel.get_child(1).get_child(0).get_child(0).get_child(0)
+	scene_dock_create_root_3d_scene_button = scene_dock_create_root_panel.get_child(1).get_child(0).get_child(0).get_child(1)
+	scene_dock_create_root_user_interface_button = scene_dock_create_root_panel.get_child(1).get_child(0).get_child(0).get_child(2)
+	scene_dock_create_root_other_node_button = scene_dock_create_root_panel.get_child(1).get_child(0).get_child(2)
 	scene_dock_add_button = scene_dock.get_child(0).get_child(0)
 	scene_dock_add_script_button = scene_dock.get_child(0).get_child(3)
 	node_create_window = Utils.find_child_by_type(scene_dock, "CreateDialog")
