@@ -173,7 +173,7 @@ var spriteframes_animation_toolbar_autoplay_button: Button = null
 var spriteframes_animation_toolbar_looping_button: Button = null
 var spriteframes_animation_toolbar_speed: SpinBox = null
 var spriteframes_animation_filter: LineEdit = null
-var spriteframes_animations: Tree= null
+var spriteframes_animations: Tree = null
 var spriteframes_frames: VBoxContainer = null
 var spriteframes_frames_toolbar: HFlowContainer = null
 var spriteframes_frames_toolbar_controls: Array[Control] = []
@@ -262,7 +262,7 @@ var tileset_tiles_tools_sort_button: MenuButton = null
 
 var tileset_tiles_atlas_editor: HSplitContainer = null
 var tileset_tiles_atlas_editor_tools: HBoxContainer = null
-var tileset_tiles_atlas_editor_tool_buttons: Array[Button]= []
+var tileset_tiles_atlas_editor_tool_buttons: Array[Button] = []
 var tileset_tiles_atlas_editor_tools_setup_button: Button = null
 var tileset_tiles_atlas_editor_tools_select_button: Button = null
 var tileset_tiles_atlas_editor_tools_paint_button: Button = null
@@ -383,7 +383,7 @@ func _init() -> void:
 	canvas_item_editor_toolbar_ungroup_button = canvas_item_editor_toolbar_buttons[14]
 	canvas_item_editor_toolbar_skeleton_options_button = canvas_item_editor_toolbar_buttons[15]
 
-	canvas_item_editor_zoom_widget = Utils.find_child_by_type(canvas_item_editor_viewport, "EditorZoomWidget" )
+	canvas_item_editor_zoom_widget = Utils.find_child_by_type(canvas_item_editor_viewport, "EditorZoomWidget")
 	canvas_item_editor_zoom_out_button = canvas_item_editor_zoom_widget.get_child(0)
 	canvas_item_editor_zoom_reset_button = canvas_item_editor_zoom_widget.get_child(1)
 	canvas_item_editor_zoom_in_button = canvas_item_editor_zoom_widget.get_child(2)
@@ -406,7 +406,7 @@ func _init() -> void:
 	spatial_editor_viewports.assign(spatial_editor.find_children("", "Node3DEditorViewport", true, false))
 	spatial_editor_preview_check_boxes.assign(spatial_editor.find_children("", "CheckBox", true, false))
 	spatial_editor_cameras.assign(spatial_editor.find_children("", "Camera3D", true, false))
-	var surfaces := {}
+	var surfaces := { }
 	for surface in spatial_editor.find_children("", "ViewportNavigationControl", true, false).map(
 		func(c: Control) -> Control: return c.get_parent()
 	):
@@ -414,7 +414,7 @@ func _init() -> void:
 	spatial_editor_surfaces.assign(surfaces.keys())
 	for surface in spatial_editor_surfaces:
 		spatial_editor_surfaces_menu_buttons.append_array(
-			surface.find_children("", "MenuButton", true, false)
+			surface.find_children("", "MenuButton", true, false),
 		)
 	spatial_editor_toolbar = spatial_editor.get_child(0).get_child(0).get_child(0)
 	var spatial_editor_toolbar_buttons := spatial_editor_toolbar.find_children("", "Button", false, false)
@@ -553,10 +553,9 @@ func _init() -> void:
 	spriteframes_frames = spriteframes_containers[1].get_child(1).get_child(0)
 	spriteframes_frames_toolbar = spriteframes_frames.get_child(0)
 	spriteframes_frames_list = spriteframes_frames.get_child(1)
-	var spriteframes_frames_toolbar_hboxes :=  spriteframes_frames_toolbar.find_children("", "HBoxContainer", false, false)
-	spriteframes_frames_toolbar_controls.assign(spriteframes_frames_toolbar_hboxes
-		.slice(0, spriteframes_frames_toolbar_hboxes.size() - 1)
-		.reduce(func(acc, h: HBoxContainer) -> Array: return acc + h.find_children("", "Button", true, false), [])
+	var spriteframes_frames_toolbar_hboxes := spriteframes_frames_toolbar.find_children("", "HBoxContainer", false, false)
+	spriteframes_frames_toolbar_controls.assign(
+		spriteframes_frames_toolbar_hboxes.slice(0, spriteframes_frames_toolbar_hboxes.size() - 1).reduce(func(acc, h: HBoxContainer) -> Array: return acc + h.find_children("", "Button", true, false), []),
 	)
 	spriteframes_frames_toolbar_controls.append_array(spriteframes_frames_toolbar.find_children("", "SpinBox", true, false))
 	spriteframes_frames_toolbar_controls.append_array(spriteframes_frames_toolbar_hboxes[-1].find_children("", "Button", true, false))
@@ -688,123 +687,125 @@ func _init() -> void:
 		window_toggle_tour_mode(window, true)
 
 	# TODO: move to a build system step instead of running it on every plugin load
-	check_button_icons({
-		context_switcher_2d_button: ["context_switcher_2d_button", "2D"],
-		context_switcher_3d_button: ["context_switcher_3d_button", "3D"],
-		context_switcher_script_button: ["context_switcher_script_button", "Script"],
-		context_switcher_game_button: ["context_switcher_game_button", "Game"],
-		context_switcher_asset_lib_button: ["context_switcher_asset_lib_button", "AssetLib"],
-		run_bar_play_button: ["run_bar_play_button", "MainPlay"],
-		run_bar_pause_button: ["run_bar_pause_button", "Pause"],
-		run_bar_stop_button: ["run_bar_stop_button", "Stop"],
-		run_bar_play_current_button: ["run_bar_play_current_button", "PlayScene"],
-		run_bar_play_custom_button: ["run_bar_play_custom_button", "PlayCustom"],
-		run_bar_movie_mode_button: ["run_bar_movie_mode_button", "MainMovieWrite"],
-		distraction_free_button: ["distraction_free_button", "DistractionFree"],
-		canvas_item_editor_toolbar_select_button: ["canvas_item_editor_toolbar_select_button", "ToolSelect"],
-		canvas_item_editor_toolbar_move_button: ["canvas_item_editor_toolbar_move_button", "ToolMove"],
-		canvas_item_editor_toolbar_rotate_button: ["canvas_item_editor_toolbar_rotate_button", "ToolRotate"],
-		canvas_item_editor_toolbar_scale_button: ["canvas_item_editor_toolbar_scale_button", "ToolScale"],
-		canvas_item_editor_toolbar_selectable_button: ["canvas_item_editor_toolbar_selectable_button", "ListSelect"],
-		canvas_item_editor_toolbar_pivot_button: ["canvas_item_editor_toolbar_pivot_button", "EditPivot"],
-		canvas_item_editor_toolbar_pan_button: ["canvas_item_editor_toolbar_pan_button", "ToolPan"],
-		canvas_item_editor_toolbar_ruler_button: ["canvas_item_editor_toolbar_ruler_button", "Ruler"],
-		canvas_item_editor_toolbar_smart_snap_button: ["canvas_item_editor_toolbar_smart_snap_button", "Snap"],
-		canvas_item_editor_toolbar_grid_button: ["canvas_item_editor_toolbar_grid_button", "SnapGrid"],
-		canvas_item_editor_toolbar_snap_options_button: ["canvas_item_editor_toolbar_snap_options_button", "GuiTabMenuHl"],
-		canvas_item_editor_toolbar_lock_button: ["canvas_item_editor_toolbar_lock_button", "Lock"],
-		canvas_item_editor_toolbar_unlock_button: ["canvas_item_editor_toolbar_unlock_button", "Unlock"],
-		canvas_item_editor_toolbar_group_button: ["canvas_item_editor_toolbar_group_button", "Group"],
-		canvas_item_editor_toolbar_ungroup_button: ["canvas_item_editor_toolbar_ungroup_button", "Ungroup"],
-		canvas_item_editor_toolbar_skeleton_options_button: ["canvas_item_editor_toolbar_skeleton_options_button", "Bone"],
-		canvas_item_editor_center_button: ["canvas_item_editor_center_button", "CenterView"],
-		canvas_item_editor_zoom_out_button: ["canvas_item_editor_zoom_out_button", "ZoomLess"],
-		canvas_item_editor_zoom_in_button: ["canvas_item_editor_zoom_in_button", "ZoomMore"],
-		spatial_editor_toolbar_select_button: ["spatial_editor_toolbar_select_button", "ToolSelect"],
-		spatial_editor_toolbar_move_button: ["spatial_editor_toolbar_move_button", "ToolMove"],
-		spatial_editor_toolbar_rotate_button: ["spatial_editor_toolbar_rotate_button", "ToolRotate"],
-		spatial_editor_toolbar_scale_button: ["spatial_editor_toolbar_scale_button", "ToolScale"],
-		spatial_editor_toolbar_selectable_button: ["spatial_editor_toolbar_selectable_button", "ListSelect"],
-		spatial_editor_toolbar_lock_button: ["spatial_editor_toolbar_lock_button", "Lock"],
-		spatial_editor_toolbar_unlock_button: ["spatial_editor_toolbar_unlock_button", "Unlock"],
-		spatial_editor_toolbar_group_button: ["spatial_editor_toolbar_group_button", "Group"],
-		spatial_editor_toolbar_ungroup_button: ["spatial_editor_toolbar_ungroup_button", "Ungroup"],
-		spatial_editor_toolbar_ruler_button: ["spatial_editor_toolbar_ruler_button", "Ruler"],
-		spatial_editor_toolbar_local_button: ["spatial_editor_toolbar_local_button", "Object"],
-		spatial_editor_toolbar_snap_button: ["spatial_editor_toolbar_snap_button", "Snap"],
-		spatial_editor_toolbar_sun_button: ["spatial_editor_toolbar_sun_button", "PreviewSun"],
-		spatial_editor_toolbar_environment_button: ["spatial_editor_toolbar_environment_button", "PreviewEnvironment"],
-		spatial_editor_toolbar_sun_environment_button: ["spatial_editor_toolbar_sun_environment_button", "GuiTabMenuHl"],
-		main_screen_tabs_add_tab_button: ["main_screen_tabs_add_tab_button", "Add"],
-		scene_dock_add_button: ["scene_dock_add_button", "Add"],
-		scene_dock_add_script_button: ["scene_dock_add_script_button", "Script"],
-		node_dock_signals_button: ["node_dock_signals_button", "Signals"],
-		node_dock_groups_button: ["node_dock_groups_button", "Groups"],
-		spriteframes_animation_toolbar_add_animation_button: ["spriteframes_animation_toolbar_add_animation_button", "New"],
-		spriteframes_animation_toolbar_duplicate_animation_button: ["spriteframes_animation_toolbar_duplicate_animation_button", "Duplicate"],
-		spriteframes_animation_toolbar_delete_animation_button: ["spriteframes_animation_toolbar_delete_animation_button", "Remove"],
-		spriteframes_animation_toolbar_autoplay_button: ["spriteframes_animation_toolbar_autoplay_button", "AutoPlay"],
-		spriteframes_animation_toolbar_looping_button: ["spriteframes_animation_toolbar_looping_button", "Loop"],
-		spriteframes_frames_toolbar_play_back_button: ["spriteframes_frames_toolbar_play_back_button", "PlayBackwards"],
-		spriteframes_frames_toolbar_play_back_from_end_button: ["spriteframes_frames_toolbar_play_back_from_end_button", "PlayStartBackwards"],
-		spriteframes_frames_toolbar_stop_button: ["spriteframes_frames_toolbar_stop_button", "Stop"],
-		spriteframes_frames_toolbar_play_from_start_button: ["spriteframes_frames_toolbar_play_from_start_button", "PlayStart"],
-		spriteframes_frames_toolbar_play_button: ["spriteframes_frames_toolbar_play_button", "Play"],
-		spriteframes_frames_toolbar_add_from_file_button: ["spriteframes_frames_toolbar_add_from_file_button", "Load"],
-		spriteframes_frames_toolbar_add_from_sheet_button: ["spriteframes_frames_toolbar_add_from_sheet_button", "SpriteSheet"],
-		spriteframes_frames_toolbar_copy_button: ["spriteframes_frames_toolbar_copy_button", "ActionCopy"],
-		spriteframes_frames_toolbar_paste_button: ["spriteframes_frames_toolbar_paste_button", "ActionPaste"],
-		spriteframes_frames_toolbar_insert_before_button: ["spriteframes_frames_toolbar_insert_before_button", "InsertBefore"],
-		spriteframes_frames_toolbar_insert_after_button: ["spriteframes_frames_toolbar_insert_after_button", "InsertAfter"],
-		spriteframes_frames_toolbar_move_left_button: ["spriteframes_frames_toolbar_move_left_button", "MoveLeft"],
-		spriteframes_frames_toolbar_move_right_button: ["spriteframes_frames_toolbar_move_right_button", "MoveRight"],
-		spriteframes_frames_toolbar_delete_button: ["spriteframes_frames_toolbar_delete_button", "Remove"],
-		spriteframes_frames_toolbar_zoom_out_button: ["spriteframes_frames_toolbar_zoom_out_button", "ZoomLess"],
-		spriteframes_frames_toolbar_zoom_reset_button: ["spriteframes_frames_toolbar_zoom_reset_button", "ZoomReset"],
-		spriteframes_frames_toolbar_zoom_in_button: ["spriteframes_frames_toolbar_zoom_in_button", "ZoomMore"],
-		tilemap_previous_button: ["tilemap_previous_button", "MoveUp"],
-		tilemap_next_button: ["tilemap_next_button", "MoveDown"],
-		tilemap_highlight_button: ["tilemap_highlight_button", "TileMapHighlightSelected"],
-		tilemap_grid_button: ["tilemap_grid_button", "Grid"],
-		tilemap_menu_button: ["tilemap_menu_button", "Tools"],
-		tilemap_tiles_toolbar_select_button: ["tilemap_tiles_toolbar_select_button", "ToolSelect"],
-		tilemap_tiles_toolbar_paint_button: ["tilemap_tiles_toolbar_paint_button", "Edit"],
-		tilemap_tiles_toolbar_line_button: ["tilemap_tiles_toolbar_line_button", "Line"],
-		tilemap_tiles_toolbar_rect_button: ["tilemap_tiles_toolbar_rect_button", "Rectangle"],
-		tilemap_tiles_toolbar_bucket_button: ["tilemap_tiles_toolbar_bucket_button", "Bucket"],
-		tilemap_tiles_toolbar_picker_button: ["tilemap_tiles_toolbar_picker_button", "ColorPick"],
-		tilemap_tiles_toolbar_eraser_button: ["tilemap_tiles_toolbar_eraser_button", "Eraser"],
-		tilemap_tiles_toolbar_rotate_left_button: ["tilemap_tiles_toolbar_rotate_left_button", "RotateLeft"],
-		tilemap_tiles_toolbar_rotate_right_button: ["tilemap_tiles_toolbar_rotate_right_button", "RotateRight"],
-		tilemap_tiles_toolbar_flip_h_button: ["tilemap_tiles_toolbar_flip_h_button", "MirrorX"],
-		tilemap_tiles_toolbar_flip_v_button: ["tilemap_tiles_toolbar_flip_v_button", "MirrorY"],
-		tilemap_tiles_toolbar_random_button: ["tilemap_tiles_toolbar_random_button", "RandomNumberGenerator"],
-		tilemap_tiles_atlas_view_zoom_out_button: ["tilemap_tiles_atlas_view_zoom_out_button", "ZoomLess"],
-		tilemap_tiles_atlas_view_zoom_in_button: ["tilemap_tiles_atlas_view_zoom_in_button", "ZoomMore"],
-		tilemap_tiles_atlas_view_center_button: ["tilemap_tiles_atlas_view_center_button", "CenterView"],
-		tilemap_terrains_toolbar_paint_button: ["tilemap_terrains_toolbar_paint_button", "Edit"],
-		tilemap_terrains_toolbar_line_button: ["tilemap_terrains_toolbar_line_button", "Line"],
-		tilemap_terrains_toolbar_rect_button: ["tilemap_terrains_toolbar_rect_button", "Rectangle"],
-		tilemap_terrains_toolbar_bucket_button: ["tilemap_terrains_toolbar_bucket_button", "Bucket"],
-		tilemap_terrains_toolbar_picker_button: ["tilemap_terrains_toolbar_picker_button", "ColorPick"],
-		tilemap_terrains_toolbar_eraser_button: ["tilemap_terrains_toolbar_eraser_button", "Eraser"],
-		tileset_tiles_tools_delete_button: ["tileset_tiles_tools_delete_button", "Remove"],
-		tileset_tiles_tools_add_button: ["tileset_tiles_tools_add_button", "Add"],
-		tileset_tiles_tools_menu_button: ["tileset_tiles_tools_menu_button", "GuiTabMenuHl"],
-		tileset_tiles_tools_sort_button: ["tileset_tiles_tools_sort_button", "Sort"],
-		tileset_tiles_atlas_editor_tools_setup_button: ["tileset_tiles_atlas_editor_tools_setup_button", "Tools"],
-		tileset_tiles_atlas_editor_tools_select_button: ["tileset_tiles_atlas_editor_tools_select_button", "ToolSelect"],
-		tileset_tiles_atlas_editor_tools_paint_button: ["tileset_tiles_atlas_editor_tools_paint_button", "Paint"],
-		tileset_tiles_atlas_editor_setup_toolbar_erase_button: ["tileset_tiles_atlas_editor_setup_toolbar_erase_button", "Eraser"],
-		tileset_tiles_atlas_editor_setup_toolbar_menu_button: ["tileset_tiles_atlas_editor_setup_toolbar_menu_button", "GuiTabMenuHl"],
-		tileset_tiles_atlas_editor_atlas_view_zoom_out_button: ["tileset_tiles_atlas_editor_atlas_view_zoom_out_button", "ZoomLess"],
-		tileset_tiles_atlas_editor_atlas_view_zoom_in_button: ["tileset_tiles_atlas_editor_atlas_view_zoom_in_button", "ZoomMore"],
-		tileset_tiles_atlas_editor_atlas_view_center_button: ["tileset_tiles_atlas_editor_atlas_view_center_button", "CenterView"],
-		tileset_tiles_scene_editor_list_tools_add_button: ["tileset_tiles_scene_editor_list_tools_add_button", "Add"],
-		tileset_tiles_scene_editor_list_tools_delete_button: ["tileset_tiles_scene_editor_list_tools_delete_button", "Remove"],
-		bottom_pin_button: ["bottom_pin_button", "Pin"],
-		bottom_expand_button: ["bottom_expand_button", "ExpandBottomDock"],
-})
+	check_button_icons(
+		{
+			context_switcher_2d_button: ["context_switcher_2d_button", "2D"],
+			context_switcher_3d_button: ["context_switcher_3d_button", "3D"],
+			context_switcher_script_button: ["context_switcher_script_button", "Script"],
+			context_switcher_game_button: ["context_switcher_game_button", "Game"],
+			context_switcher_asset_lib_button: ["context_switcher_asset_lib_button", "AssetLib"],
+			run_bar_play_button: ["run_bar_play_button", "MainPlay"],
+			run_bar_pause_button: ["run_bar_pause_button", "Pause"],
+			run_bar_stop_button: ["run_bar_stop_button", "Stop"],
+			run_bar_play_current_button: ["run_bar_play_current_button", "PlayScene"],
+			run_bar_play_custom_button: ["run_bar_play_custom_button", "PlayCustom"],
+			run_bar_movie_mode_button: ["run_bar_movie_mode_button", "MainMovieWrite"],
+			distraction_free_button: ["distraction_free_button", "DistractionFree"],
+			canvas_item_editor_toolbar_select_button: ["canvas_item_editor_toolbar_select_button", "ToolSelect"],
+			canvas_item_editor_toolbar_move_button: ["canvas_item_editor_toolbar_move_button", "ToolMove"],
+			canvas_item_editor_toolbar_rotate_button: ["canvas_item_editor_toolbar_rotate_button", "ToolRotate"],
+			canvas_item_editor_toolbar_scale_button: ["canvas_item_editor_toolbar_scale_button", "ToolScale"],
+			canvas_item_editor_toolbar_selectable_button: ["canvas_item_editor_toolbar_selectable_button", "ListSelect"],
+			canvas_item_editor_toolbar_pivot_button: ["canvas_item_editor_toolbar_pivot_button", "EditPivot"],
+			canvas_item_editor_toolbar_pan_button: ["canvas_item_editor_toolbar_pan_button", "ToolPan"],
+			canvas_item_editor_toolbar_ruler_button: ["canvas_item_editor_toolbar_ruler_button", "Ruler"],
+			canvas_item_editor_toolbar_smart_snap_button: ["canvas_item_editor_toolbar_smart_snap_button", "Snap"],
+			canvas_item_editor_toolbar_grid_button: ["canvas_item_editor_toolbar_grid_button", "SnapGrid"],
+			canvas_item_editor_toolbar_snap_options_button: ["canvas_item_editor_toolbar_snap_options_button", "GuiTabMenuHl"],
+			canvas_item_editor_toolbar_lock_button: ["canvas_item_editor_toolbar_lock_button", "Lock"],
+			canvas_item_editor_toolbar_unlock_button: ["canvas_item_editor_toolbar_unlock_button", "Unlock"],
+			canvas_item_editor_toolbar_group_button: ["canvas_item_editor_toolbar_group_button", "Group"],
+			canvas_item_editor_toolbar_ungroup_button: ["canvas_item_editor_toolbar_ungroup_button", "Ungroup"],
+			canvas_item_editor_toolbar_skeleton_options_button: ["canvas_item_editor_toolbar_skeleton_options_button", "Bone"],
+			canvas_item_editor_center_button: ["canvas_item_editor_center_button", "CenterView"],
+			canvas_item_editor_zoom_out_button: ["canvas_item_editor_zoom_out_button", "ZoomLess"],
+			canvas_item_editor_zoom_in_button: ["canvas_item_editor_zoom_in_button", "ZoomMore"],
+			spatial_editor_toolbar_select_button: ["spatial_editor_toolbar_select_button", "ToolSelect"],
+			spatial_editor_toolbar_move_button: ["spatial_editor_toolbar_move_button", "ToolMove"],
+			spatial_editor_toolbar_rotate_button: ["spatial_editor_toolbar_rotate_button", "ToolRotate"],
+			spatial_editor_toolbar_scale_button: ["spatial_editor_toolbar_scale_button", "ToolScale"],
+			spatial_editor_toolbar_selectable_button: ["spatial_editor_toolbar_selectable_button", "ListSelect"],
+			spatial_editor_toolbar_lock_button: ["spatial_editor_toolbar_lock_button", "Lock"],
+			spatial_editor_toolbar_unlock_button: ["spatial_editor_toolbar_unlock_button", "Unlock"],
+			spatial_editor_toolbar_group_button: ["spatial_editor_toolbar_group_button", "Group"],
+			spatial_editor_toolbar_ungroup_button: ["spatial_editor_toolbar_ungroup_button", "Ungroup"],
+			spatial_editor_toolbar_ruler_button: ["spatial_editor_toolbar_ruler_button", "Ruler"],
+			spatial_editor_toolbar_local_button: ["spatial_editor_toolbar_local_button", "Object"],
+			spatial_editor_toolbar_snap_button: ["spatial_editor_toolbar_snap_button", "Snap"],
+			spatial_editor_toolbar_sun_button: ["spatial_editor_toolbar_sun_button", "PreviewSun"],
+			spatial_editor_toolbar_environment_button: ["spatial_editor_toolbar_environment_button", "PreviewEnvironment"],
+			spatial_editor_toolbar_sun_environment_button: ["spatial_editor_toolbar_sun_environment_button", "GuiTabMenuHl"],
+			main_screen_tabs_add_tab_button: ["main_screen_tabs_add_tab_button", "Add"],
+			scene_dock_add_button: ["scene_dock_add_button", "Add"],
+			scene_dock_add_script_button: ["scene_dock_add_script_button", "Script"],
+			node_dock_signals_button: ["node_dock_signals_button", "Signals"],
+			node_dock_groups_button: ["node_dock_groups_button", "Groups"],
+			spriteframes_animation_toolbar_add_animation_button: ["spriteframes_animation_toolbar_add_animation_button", "New"],
+			spriteframes_animation_toolbar_duplicate_animation_button: ["spriteframes_animation_toolbar_duplicate_animation_button", "Duplicate"],
+			spriteframes_animation_toolbar_delete_animation_button: ["spriteframes_animation_toolbar_delete_animation_button", "Remove"],
+			spriteframes_animation_toolbar_autoplay_button: ["spriteframes_animation_toolbar_autoplay_button", "AutoPlay"],
+			spriteframes_animation_toolbar_looping_button: ["spriteframes_animation_toolbar_looping_button", "Loop"],
+			spriteframes_frames_toolbar_play_back_button: ["spriteframes_frames_toolbar_play_back_button", "PlayBackwards"],
+			spriteframes_frames_toolbar_play_back_from_end_button: ["spriteframes_frames_toolbar_play_back_from_end_button", "PlayStartBackwards"],
+			spriteframes_frames_toolbar_stop_button: ["spriteframes_frames_toolbar_stop_button", "Stop"],
+			spriteframes_frames_toolbar_play_from_start_button: ["spriteframes_frames_toolbar_play_from_start_button", "PlayStart"],
+			spriteframes_frames_toolbar_play_button: ["spriteframes_frames_toolbar_play_button", "Play"],
+			spriteframes_frames_toolbar_add_from_file_button: ["spriteframes_frames_toolbar_add_from_file_button", "Load"],
+			spriteframes_frames_toolbar_add_from_sheet_button: ["spriteframes_frames_toolbar_add_from_sheet_button", "SpriteSheet"],
+			spriteframes_frames_toolbar_copy_button: ["spriteframes_frames_toolbar_copy_button", "ActionCopy"],
+			spriteframes_frames_toolbar_paste_button: ["spriteframes_frames_toolbar_paste_button", "ActionPaste"],
+			spriteframes_frames_toolbar_insert_before_button: ["spriteframes_frames_toolbar_insert_before_button", "InsertBefore"],
+			spriteframes_frames_toolbar_insert_after_button: ["spriteframes_frames_toolbar_insert_after_button", "InsertAfter"],
+			spriteframes_frames_toolbar_move_left_button: ["spriteframes_frames_toolbar_move_left_button", "MoveLeft"],
+			spriteframes_frames_toolbar_move_right_button: ["spriteframes_frames_toolbar_move_right_button", "MoveRight"],
+			spriteframes_frames_toolbar_delete_button: ["spriteframes_frames_toolbar_delete_button", "Remove"],
+			spriteframes_frames_toolbar_zoom_out_button: ["spriteframes_frames_toolbar_zoom_out_button", "ZoomLess"],
+			spriteframes_frames_toolbar_zoom_reset_button: ["spriteframes_frames_toolbar_zoom_reset_button", "ZoomReset"],
+			spriteframes_frames_toolbar_zoom_in_button: ["spriteframes_frames_toolbar_zoom_in_button", "ZoomMore"],
+			tilemap_previous_button: ["tilemap_previous_button", "MoveUp"],
+			tilemap_next_button: ["tilemap_next_button", "MoveDown"],
+			tilemap_highlight_button: ["tilemap_highlight_button", "TileMapHighlightSelected"],
+			tilemap_grid_button: ["tilemap_grid_button", "Grid"],
+			tilemap_menu_button: ["tilemap_menu_button", "Tools"],
+			tilemap_tiles_toolbar_select_button: ["tilemap_tiles_toolbar_select_button", "ToolSelect"],
+			tilemap_tiles_toolbar_paint_button: ["tilemap_tiles_toolbar_paint_button", "Edit"],
+			tilemap_tiles_toolbar_line_button: ["tilemap_tiles_toolbar_line_button", "Line"],
+			tilemap_tiles_toolbar_rect_button: ["tilemap_tiles_toolbar_rect_button", "Rectangle"],
+			tilemap_tiles_toolbar_bucket_button: ["tilemap_tiles_toolbar_bucket_button", "Bucket"],
+			tilemap_tiles_toolbar_picker_button: ["tilemap_tiles_toolbar_picker_button", "ColorPick"],
+			tilemap_tiles_toolbar_eraser_button: ["tilemap_tiles_toolbar_eraser_button", "Eraser"],
+			tilemap_tiles_toolbar_rotate_left_button: ["tilemap_tiles_toolbar_rotate_left_button", "RotateLeft"],
+			tilemap_tiles_toolbar_rotate_right_button: ["tilemap_tiles_toolbar_rotate_right_button", "RotateRight"],
+			tilemap_tiles_toolbar_flip_h_button: ["tilemap_tiles_toolbar_flip_h_button", "MirrorX"],
+			tilemap_tiles_toolbar_flip_v_button: ["tilemap_tiles_toolbar_flip_v_button", "MirrorY"],
+			tilemap_tiles_toolbar_random_button: ["tilemap_tiles_toolbar_random_button", "RandomNumberGenerator"],
+			tilemap_tiles_atlas_view_zoom_out_button: ["tilemap_tiles_atlas_view_zoom_out_button", "ZoomLess"],
+			tilemap_tiles_atlas_view_zoom_in_button: ["tilemap_tiles_atlas_view_zoom_in_button", "ZoomMore"],
+			tilemap_tiles_atlas_view_center_button: ["tilemap_tiles_atlas_view_center_button", "CenterView"],
+			tilemap_terrains_toolbar_paint_button: ["tilemap_terrains_toolbar_paint_button", "Edit"],
+			tilemap_terrains_toolbar_line_button: ["tilemap_terrains_toolbar_line_button", "Line"],
+			tilemap_terrains_toolbar_rect_button: ["tilemap_terrains_toolbar_rect_button", "Rectangle"],
+			tilemap_terrains_toolbar_bucket_button: ["tilemap_terrains_toolbar_bucket_button", "Bucket"],
+			tilemap_terrains_toolbar_picker_button: ["tilemap_terrains_toolbar_picker_button", "ColorPick"],
+			tilemap_terrains_toolbar_eraser_button: ["tilemap_terrains_toolbar_eraser_button", "Eraser"],
+			tileset_tiles_tools_delete_button: ["tileset_tiles_tools_delete_button", "Remove"],
+			tileset_tiles_tools_add_button: ["tileset_tiles_tools_add_button", "Add"],
+			tileset_tiles_tools_menu_button: ["tileset_tiles_tools_menu_button", "GuiTabMenuHl"],
+			tileset_tiles_tools_sort_button: ["tileset_tiles_tools_sort_button", "Sort"],
+			tileset_tiles_atlas_editor_tools_setup_button: ["tileset_tiles_atlas_editor_tools_setup_button", "Tools"],
+			tileset_tiles_atlas_editor_tools_select_button: ["tileset_tiles_atlas_editor_tools_select_button", "ToolSelect"],
+			tileset_tiles_atlas_editor_tools_paint_button: ["tileset_tiles_atlas_editor_tools_paint_button", "Paint"],
+			tileset_tiles_atlas_editor_setup_toolbar_erase_button: ["tileset_tiles_atlas_editor_setup_toolbar_erase_button", "Eraser"],
+			tileset_tiles_atlas_editor_setup_toolbar_menu_button: ["tileset_tiles_atlas_editor_setup_toolbar_menu_button", "GuiTabMenuHl"],
+			tileset_tiles_atlas_editor_atlas_view_zoom_out_button: ["tileset_tiles_atlas_editor_atlas_view_zoom_out_button", "ZoomLess"],
+			tileset_tiles_atlas_editor_atlas_view_zoom_in_button: ["tileset_tiles_atlas_editor_atlas_view_zoom_in_button", "ZoomMore"],
+			tileset_tiles_atlas_editor_atlas_view_center_button: ["tileset_tiles_atlas_editor_atlas_view_center_button", "CenterView"],
+			tileset_tiles_scene_editor_list_tools_add_button: ["tileset_tiles_scene_editor_list_tools_add_button", "Add"],
+			tileset_tiles_scene_editor_list_tools_delete_button: ["tileset_tiles_scene_editor_list_tools_delete_button", "Remove"],
+			bottom_pin_button: ["bottom_pin_button", "Pin"],
+			bottom_expand_button: ["bottom_expand_button", "ExpandBottomDock"],
+		},
+	)
 
 
 func clean_up() -> void:
