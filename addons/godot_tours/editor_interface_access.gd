@@ -448,9 +448,10 @@ func _init() -> void:
 	# Left Upper
 	scene_dock = Utils.find_child_by_type(base_control, "SceneTreeDock")
 	scene_dock_create_root_panel = scene_dock.get_child(2)
-	scene_dock_create_root_2d_scene_button = scene_dock_create_root_panel.get_child(1).get_child(0).get_child(0).get_child(0)
-	scene_dock_create_root_3d_scene_button = scene_dock_create_root_panel.get_child(1).get_child(0).get_child(0).get_child(1)
-	scene_dock_create_root_user_interface_button = scene_dock_create_root_panel.get_child(1).get_child(0).get_child(0).get_child(2)
+	var scene_dock_create_root_buttons_container: Control = scene_dock_create_root_panel.get_child(1).get_child(0).get_child(0)
+	scene_dock_create_root_2d_scene_button = scene_dock_create_root_buttons_container.get_child(0)
+	scene_dock_create_root_3d_scene_button = scene_dock_create_root_buttons_container.get_child(1)
+	scene_dock_create_root_user_interface_button = scene_dock_create_root_buttons_container.get_child(2)
 	scene_dock_create_root_other_node_button = scene_dock_create_root_panel.get_child(1).get_child(0).get_child(2)
 	scene_dock_add_button = scene_dock.get_child(0).get_child(0)
 	scene_dock_add_script_button = scene_dock.get_child(0).get_child(3)
